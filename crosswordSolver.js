@@ -11,16 +11,12 @@ const crosswordSolver = (emptyPuzzle, words) => {
 
     const puzzle = base.map(e => e.map(e => ""))
 
-    console.log(paths)
-
     const res = goTroughPaths(paths, [...puzzle], words)
 
     if (!res) {
-        console.log("Nope")
+        console.log("Error")
         return
     }
-
-    console.log(res)
 
     const formatedResult = res.map(row => {
         return row.map(item => {
@@ -33,7 +29,6 @@ const crosswordSolver = (emptyPuzzle, words) => {
     }).join("\n")
 
     console.log(formatedResult)
-
 }
 
 const intialize = (emptyPuzzle) => {
@@ -70,22 +65,22 @@ const getPaths = (puzzle) => {
         }
     }
 
-    if (path.length > 1) {
-        paths.push({path:[...path]})
-        path = []
-    }
+    // if (path.length > 1) {
+    //     paths.push({path:[...path]})
+    //     path = []
+    // }
 
     let row = 0
     
     while (row < puzzle[0].length) {
         let col = 0
         let start = false
-        if (path.length > 1) {
-            paths.push({path:[...path]})
-            path = []
-        } else {
-            path = []
-        }
+        // if (path.length > 1) {
+        //     paths.push({path:[...path]})
+        //     path = []
+        // } else {
+        //     path = []
+        // }
 
         while (col < puzzle.length) {
             const item = puzzle[col][row]
@@ -129,11 +124,15 @@ const goTroughPaths = (paths, puzzle, words) => {
             const path = paths[i]
 
             if (checker(path, word, puzzle)) {
-                const test = goTroughPaths(removeItem(paths, i), fillPath(paths[i], [...puzzle], words[k]), removeItem(words, k))
-                if (test === null) {
+                const newPaths = removeItem(paths, i)
+                const newPuzzel = fillPath(paths[i], [...puzzle], words[k])
+                const newWords = removeItem(words, k)
+
+                const result = goTroughPaths(newPaths, newPuzzel, newWords)
+                if (result === null) {
                     continue
                 } else {
-                    return test
+                    return result
                 }
             }
         }
@@ -156,7 +155,9 @@ const fillPath = (path, puzzle, word) => {
     puzzle = puzzle.map(e => e.map(e => e))
 
     for (let i = 0; i < path.path.length; i++) {
-        puzzle[path.path[i].y][path.path[i].x] = word[i]
+        const [x, y] = [path.path[i].x, path.path[i].y]
+
+        puzzle[y][x] = word[i]
     }
 
     return puzzle
@@ -166,13 +167,14 @@ const fillPath = (path, puzzle, word) => {
     // check if the length is the same
     // check if the fill cells in the path in the puzzle are the same in the word
 const checker = (path, word, puzzle) => {
-    //console.log(path.path.length, word.length)
     if (path.path.length !== word.length) {
         return false
     }
 
     for (let i = 0; i < path.path.length; i++) {
-        const cell = puzzle[path.path[i].y][path.path[i].x]
+        const [x, y] = [path.path[i].x, path.path[i].y]
+
+        const cell = puzzle[y][x]
         if (cell !== "" && cell !== word[i]) {
             return false
         }
@@ -185,15 +187,32 @@ const removeItem = (arr, i) => {
     return arr.filter((v, index) => index != i)
 }
 
-const puzzle = '2001\n0..0\n1000\n0..0'
-const words = ['casa', 'alan', 'ciao', 'anta']
+const puzzle = `...1...........
+..1000001000...
+...0....0......
+.1......0...1..
+.0....100000000
+100000..0...0..
+.0.....1001000.
+.0.1....0.0....
+.10000000.0....
+.0.0......0....
+.0.0.....100...
+...0......0....
+..........0....`
+const words = [
+  'sun',
+  'sunglasses',
+  'suncream',
+  'swimming',
+  'bikini',
+  'beach',
+  'icecream',
+  'tan',
+  'deckchair',
+  'sand',
+  'seaside',
+  'sandals',
+]
 
 crosswordSolver(puzzle, words)
-console.log(puzzle.split("").filter(e => e === "1").length)
-
-/* output:
-`casa
-i..l
-anta
-o..n`
-*/
