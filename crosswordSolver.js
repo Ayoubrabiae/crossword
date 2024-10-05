@@ -6,13 +6,34 @@ const crosswordSolver = (emptyPuzzle, words) => {
     const base = intialize(emptyPuzzle)
 
     // create a variable hold paths 
-        // path definsion {direction: "v" or "h", path: []int}
+        // path definsion {path: [{x,y}]}
     const paths = getPaths(base)
 
-    console.log(base)
+    const puzzle = base.map(e => e.map(e => ""))
+
     console.log(paths)
 
-    // create a res var to hold the result (two deminsonal array)
+    const res = goTroughPaths(paths, [...puzzle], words)
+
+    if (!res) {
+        console.log("Nope")
+        return
+    }
+
+    console.log(res)
+
+    const formatedResult = res.map(row => {
+        return row.map(item => {
+            if (item === "") {
+                return "."
+            } else {
+                return item
+            }
+        }).join("")
+    }).join("\n")
+
+    console.log(formatedResult)
+
 }
 
 const intialize = (emptyPuzzle) => {
@@ -37,7 +58,7 @@ const getPaths = (puzzle) => {
             if (Number(row[k]) > 0 && !start) {
                 start = true
                 path.push({x: k, y: i})
-            } else if (row[k] === "0" && start) {
+            } else if (row[k] !== "." && start) {
                 path.push({x: k, y: i})
             } else {
                 start = false
@@ -96,6 +117,74 @@ const getPaths = (puzzle) => {
     return paths
 }
 
+const goTroughPaths = (paths, puzzle, words) => {
+    // loop over the paths 
+        // loop over the words and pick one
+        // add it to the puzzle in the specific path
+        // call goTroughPaths and send the paths without the chosen path and word and with new puzzle
+
+    for (let i = 0; i < paths.length; i++) {
+        for (let k = 0; k < words.length; k++) {
+            const word = words[k]
+            const path = paths[i]
+
+            if (checker(path, word, puzzle)) {
+                const test = goTroughPaths(removeItem(paths, i), fillPath(paths[i], [...puzzle], words[k]), removeItem(words, k))
+                if (test === null) {
+                    continue
+                } else {
+                    return test
+                }
+            }
+        }
+    }
+
+    // return null if the paths or the words not finish
+    // else return the puzzle
+    if (paths.length !== 0 || words.length !== 0) {
+        return null
+    }
+    return puzzle
+}
+
+// fill a path in the puzzle with a word
+const fillPath = (path, puzzle, word) => {
+    if (word.length != path.path.length) {
+        return null
+    }
+
+    puzzle = puzzle.map(e => e.map(e => e))
+
+    for (let i = 0; i < path.path.length; i++) {
+        puzzle[path.path[i].y][path.path[i].x] = word[i]
+    }
+
+    return puzzle
+}
+
+// check if the word can be added to a specfic path in the puzzle
+    // check if the length is the same
+    // check if the fill cells in the path in the puzzle are the same in the word
+const checker = (path, word, puzzle) => {
+    //console.log(path.path.length, word.length)
+    if (path.path.length !== word.length) {
+        return false
+    }
+
+    for (let i = 0; i < path.path.length; i++) {
+        const cell = puzzle[path.path[i].y][path.path[i].x]
+        if (cell !== "" && cell !== word[i]) {
+            return false
+        }
+    }
+
+    return true
+}
+
+const removeItem = (arr, i) => {
+    return arr.filter((v, index) => index != i)
+}
+
 const puzzle = `...1...........
 ..1000001000...
 ...0....0......
@@ -109,8 +198,20 @@ const puzzle = `...1...........
 .0.0.....100...
 ...0......0....
 ..........0....`
-
-const words = ['casa', 'alan', 'ciao', 'anta']
+const words = [
+  'sun',
+  'sunglasses',
+  'suncream',
+  'swimming',
+  'bikini',
+  'beach',
+  'icecream',
+  'tan',
+  'deckchair',
+  'sand',
+  'seaside',
+  'sandals',
+].reverse()
 
 crosswordSolver(puzzle, words)
 console.log(puzzle.split("").filter(e => e === "1").length)
