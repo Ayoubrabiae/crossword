@@ -54,6 +54,7 @@ const getRowPaths = (puzzle) => {
     for (let i = 0; i < puzzle.length; i++) {
         const row = puzzle[i]
         let start = false
+        
         if (path.length > 1) {
             paths.push([...path])
             path = []
@@ -75,6 +76,13 @@ const getRowPaths = (puzzle) => {
                 path = []
             }
         }
+    }
+
+    if (path.length > 1) {
+        paths.push([...path])
+        path = []
+    } else {
+        path = []
     }
 
     return paths
