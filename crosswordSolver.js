@@ -226,7 +226,7 @@ const checkMismatch = (puzzle, words) => {
 }
 
 const checkPuzzle = (puzzle) => {
-    return !/[^012\.\n]/g.test(puzzle)
+    return !/[^012\.\n]/g.test(puzzle) && puzzle !== ""
 }
 
 const checkWords = (words) => {
@@ -244,9 +244,3 @@ const formatTheResult = (res) => {
         }).join("")
     }).join("\n")
 }
-
-const puzzle = '2001\n0..0\n1000\n0..0'
-const words = ['casa', 'alan', 'ciao', 'anta']
-
-console.log(checkWords(words))
-crosswordSolver(puzzle, words)
