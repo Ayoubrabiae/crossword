@@ -77,7 +77,6 @@ const getRowPaths = (puzzle) => {
                 if (k+1 < row.length && row[k+1] !== ".") {
                     row[k] = String(row[k]-1)
                 }
-                console.log(puzzle)
                 start = true
                 path.push({x: k, y: i})
             } else if (row[k] !== "." && start) {
@@ -261,33 +260,3 @@ const formatTheResult = (res) => {
         }).join("")
     }).join("\n")
 }
-
-const puzzle = `...1...........
-..1000001000...
-...0....0......
-.1......0...1..
-.0....100000000
-100000..0...0..
-.0.....1001000.
-.0.1....0.0....
-.10000000.0....
-.0.0......0....
-.0.0.....100...
-...0......0....
-..........0....`
-const words = [
-  'sun',
-  'sunglasses',
-  'suncream',
-  'swimming',
-  'bikini',
-  'beach',
-  'icecream',
-  'tan',
-  'deckchair',
-  'sand',
-  'seaside',
-  'sandals',
-]
-
-crosswordSolver(puzzle,words)
