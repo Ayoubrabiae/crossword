@@ -1,11 +1,12 @@
 const crosswordSolver = (emptyPuzzle, words) => {
+    // Check types of args
     if (typeof emptyPuzzle !== "string" || !Array.isArray(words)) {
         console.log("Error")
         return
     }
 
-    // check mismatch between words and paths, and duplicate words
-    if (!checkMismatch(emptyPuzzle, words) || !checkPuzzle(emptyPuzzle)) {
+    // Check puzzle and words
+    if (!checkMismatch(emptyPuzzle, words) || !checkPuzzle(emptyPuzzle) || !checkWords(words)) {
         console.log("Error")
         return
     }
@@ -17,24 +18,27 @@ const crosswordSolver = (emptyPuzzle, words) => {
         // path definsion {path: [{x,y}]}
     const paths = getPaths(base)
 
+    // create an empty puzzle
     const puzzle = base.map(e => e.map(e => ""))
 
-    const res = goTroughPaths(paths, [...puzzle], [...words])
+    const res = goTroughPaths(paths, [...puzzle], words)
 
+    // Check if we have no solution
     if (!res) {
         console.log("Error")
         return
     }
 
+    // Format The result
     const formatedResult = formatTheResult(res)
-    const secondRes = formatTheResult(goTroughPaths(paths, [...puzzle], [...words].reverse()))
+    const secondRes = formatTheResult(goTroughPaths(paths, [...puzzle], words.reverse()))
 
     if (formatedResult !== secondRes) {
         console.log("Error")
         return
     }
 
-    console.log("%c"+formatedResult, "color: crimson; font-size: 25px;")
+    console.log(formatedResult)
 }
 
 const intialize = (emptyPuzzle) => {
