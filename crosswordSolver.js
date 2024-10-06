@@ -1,6 +1,11 @@
 const crosswordSolver = (emptyPuzzle, words) => {
     // check emptyPuzzle
     // check words duplicates
+    // check mismatch between words and paths
+    if (!checkMismatch(emptyPuzzle, words)) {
+        console.log("Error")
+        return
+    }
 
     // create base (convert emptyPuzzle to 2d array)
     const base = intialize(emptyPuzzle)
@@ -202,32 +207,19 @@ const removeItem = (arr, i) => {
     return arr.filter((v, index) => index != i)
 }
 
-const puzzle = `...1...........
-..1000001000...
-...0....0......
-.1......0...1..
-.0....100000000
-100000..0...0..
-.0.....1001000.
-.0.1....0.0....
-.10000000.0....
-.0.0......0....
-.0.0.....100...
-...0......0....
-..........0....`
-const words = [
-  'sun',
-  'sunglasses',
-  'suncream',
-  'swimming',
-  'bikini',
-  'beach',
-  'icecream',
-  'tan',
-  'deckchair',
-  'sand',
-  'seaside',
-  'sandals',
-]
+// Check if the words length doesn't match the word paths in the puzzle
+const checkMismatch = (puzzle, words) => {
+    let count = 0
+    puzzle.split("").forEach(char => {
+        if (Number(char) > 0) {
+            count += Number(char)
+        }
+    })
+
+    return words.length === count
+}
+
+const puzzle = '2001\n0..0\n2000\n0..0'
+const words = ['casa', 'alan', 'ciao', 'anta']
 
 crosswordSolver(puzzle, words)
