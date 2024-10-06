@@ -1,8 +1,11 @@
 const crosswordSolver = (emptyPuzzle, words) => {
-    // check emptyPuzzle
-    // check words duplicates
-    // check mismatch between words and paths
-    if (!checkMismatch(emptyPuzzle, words)) {
+    if (typeof emptyPuzzle !== "string" || !Array.isArray(words)) {
+        console.log("Error")
+        return
+    }
+
+    // check mismatch between words and paths, and duplicate words
+    if (!checkMismatch(emptyPuzzle, words) || !checkPuzzle(emptyPuzzle)) {
         console.log("Error")
         return
     }
@@ -16,22 +19,20 @@ const crosswordSolver = (emptyPuzzle, words) => {
 
     const puzzle = base.map(e => e.map(e => ""))
 
-    const res = goTroughPaths(paths, [...puzzle], words)
+    const res = goTroughPaths(paths, [...puzzle], [...words])
 
     if (!res) {
         console.log("Error")
         return
     }
 
-    const formatedResult = res.map(row => {
-        return row.map(item => {
-            if (item === "") {
-                return "."
-            } else {
-                return item
-            }
-        }).join("")
-    }).join("\n")
+    const formatedResult = formatTheResult(res)
+    const secondRes = formatTheResult(goTroughPaths(paths, [...puzzle], [...words].reverse()))
+
+    if (formatedResult !== secondRes) {
+        console.log("Error")
+        return
+    }
 
     console.log("%c"+formatedResult, "color: crimson; font-size: 25px;")
 }
@@ -96,6 +97,11 @@ const getRowPaths = (puzzle) => {
 const getColPaths = (puzzle) => {
     const paths = []
     let path = []
+
+    if (path.length > 1) {
+        paths.push([...path])
+        path = []
+    }
 
     let row = 0
     while (row < puzzle[0].length) {
@@ -219,7 +225,28 @@ const checkMismatch = (puzzle, words) => {
     return words.length === count
 }
 
-const puzzle = '2001\n0..0\n2000\n0..0'
+const checkPuzzle = (puzzle) => {
+    return !/[^012\.\n]/g.test(puzzle)
+}
+
+const checkWords = (words) => {
+    return words.length === new Set(words).size
+}
+
+const formatTheResult = (res) => {
+    return res.map(row => {
+        return row.map(item => {
+            if (item === "") {
+                return "."
+            } else {
+                return item
+            }
+        }).join("")
+    }).join("\n")
+}
+
+const puzzle = '2001\n0..0\n1000\n0..0'
 const words = ['casa', 'alan', 'ciao', 'anta']
 
+console.log(checkWords(words))
 crosswordSolver(puzzle, words)
