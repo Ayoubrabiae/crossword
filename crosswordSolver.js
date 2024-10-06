@@ -74,6 +74,10 @@ const getRowPaths = (puzzle) => {
 
         for (let k = 0; k < row.length; k++) {
             if (Number(row[k]) > 0 && !start) {
+                if (k+1 < row.length && row[k+1] !== ".") {
+                    row[k] = String(row[k]-1)
+                }
+                console.log(puzzle)
                 start = true
                 path.push({x: k, y: i})
             } else if (row[k] !== "." && start) {
@@ -116,6 +120,7 @@ const getColPaths = (puzzle) => {
             const item = puzzle[col][row]
 
             if (Number(item) > 0 && !start) {
+                puzzle[col][row]= String(puzzle[col][row]-1)
                 start = true
                 path.push({x: row, y: col})
             } else if (item !== "." && start) {
@@ -283,6 +288,6 @@ const words = [
   'sand',
   'seaside',
   'sandals',
-].reverse()
+]
 
 crosswordSolver(puzzle,words)
