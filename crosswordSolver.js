@@ -28,7 +28,7 @@ const crosswordSolver = (emptyPuzzle, words) => {
         }).join("")
     }).join("\n")
 
-    console.log(formatedResult)
+    console.log("%c"+formatedResult, "color: crimson; font-size: 25px;")
 }
 
 const intialize = (emptyPuzzle) => {
@@ -37,13 +37,25 @@ const intialize = (emptyPuzzle) => {
 
 const getPaths = (puzzle) => {
     const paths = []
+
+    const rowPaths = getRowPaths(puzzle)
+    paths.push(...rowPaths)
+
+    const colPaths = getColPaths(puzzle)
+    paths.push(...colPaths)
+
+    return paths
+}
+
+const getRowPaths = (puzzle) => {
+    const paths = []
     let path = []
 
     for (let i = 0; i < puzzle.length; i++) {
         const row = puzzle[i]
         let start = false
         if (path.length > 1) {
-            paths.push({path:[...path]})
+            paths.push([...path])
             path = []
         } else {
             path = []
@@ -58,29 +70,24 @@ const getPaths = (puzzle) => {
             } else {
                 start = false
                 if (path.length > 1) {
-                    paths.push({path:[...path]})
+                    paths.push([...path])
                 }
                 path = []
             }
         }
     }
 
-    // if (path.length > 1) {
-    //     paths.push({path:[...path]})
-    //     path = []
-    // }
+    return paths
+}
+
+const getColPaths = (puzzle) => {
+    const paths = []
+    let path = []
 
     let row = 0
-    
     while (row < puzzle[0].length) {
         let col = 0
         let start = false
-        // if (path.length > 1) {
-        //     paths.push({path:[...path]})
-        //     path = []
-        // } else {
-        //     path = []
-        // }
 
         while (col < puzzle.length) {
             const item = puzzle[col][row]
@@ -93,7 +100,7 @@ const getPaths = (puzzle) => {
             } else {
                 start = false
                 if (path.length > 1) {
-                    paths.push({path:[...path]})
+                    paths.push([...path])
                 }
                 path = []
             }
@@ -105,7 +112,7 @@ const getPaths = (puzzle) => {
     }
 
     if (path.length > 1) {
-        paths.push({path:[...path]})
+        paths.push([...path])
         path = []
     }
 
@@ -148,14 +155,14 @@ const goTroughPaths = (paths, puzzle, words) => {
 
 // fill a path in the puzzle with a word
 const fillPath = (path, puzzle, word) => {
-    if (word.length != path.path.length) {
+    if (word.length != path.length) {
         return null
     }
 
     puzzle = puzzle.map(e => e.map(e => e))
 
-    for (let i = 0; i < path.path.length; i++) {
-        const [x, y] = [path.path[i].x, path.path[i].y]
+    for (let i = 0; i < path.length; i++) {
+        const [x, y] = [path[i].x, path[i].y]
 
         puzzle[y][x] = word[i]
     }
@@ -167,12 +174,12 @@ const fillPath = (path, puzzle, word) => {
     // check if the length is the same
     // check if the fill cells in the path in the puzzle are the same in the word
 const checker = (path, word, puzzle) => {
-    if (path.path.length !== word.length) {
+    if (path.length !== word.length) {
         return false
     }
 
-    for (let i = 0; i < path.path.length; i++) {
-        const [x, y] = [path.path[i].x, path.path[i].y]
+    for (let i = 0; i < path.length; i++) {
+        const [x, y] = [path[i].x, path[i].y]
 
         const cell = puzzle[y][x]
         if (cell !== "" && cell !== word[i]) {
