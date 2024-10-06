@@ -230,7 +230,15 @@ const checkMismatch = (puzzle, words) => {
 }
 
 const checkPuzzle = (puzzle) => {
-    return !/[^012\.\n]/g.test(puzzle) && puzzle !== ""
+    const rowsPuzzel = puzzle.split("\n")
+
+    for (let i = 0; i < rowsPuzzel.length; i++) {
+        if (rowsPuzzel[i].length !== rowsPuzzel[0].length) {
+            return false
+        }
+    }
+
+    return !/[^012.\n]/g.test(puzzle) && puzzle !== ""
 }
 
 const checkWords = (words) => {
@@ -248,3 +256,33 @@ const formatTheResult = (res) => {
         }).join("")
     }).join("\n")
 }
+
+const puzzle = `...1...........
+..1000001000...
+...0....0......
+.1......0...1..
+.0....100000000
+100000..0...0..
+.0.....1001000.
+.0.1....0.0....
+.10000000.0....
+.0.0......0....
+.0.0.....100...
+...0......0....
+..........0....`
+const words = [
+  'sun',
+  'sunglasses',
+  'suncream',
+  'swimming',
+  'bikini',
+  'beach',
+  'icecream',
+  'tan',
+  'deckchair',
+  'sand',
+  'seaside',
+  'sandals',
+].reverse()
+
+crosswordSolver(puzzle,words)
